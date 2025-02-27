@@ -16,12 +16,12 @@ public class Student {
     }
 }
 
-public class StudentData {
+class StudentData {
     public static List<Student> readCSV(String filename) {
         List<Student> students = new ArrayList<>();
         try (BufferedReader br = new BufferedReader(new FileReader(filename))) {
             String line;
-            br.readLine(); // Skip header
+            br.readLine(); // Skip header\
             while ((line = br.readLine()) != null) {
                 String[] parts = line.split(",");
                 students.add(new Student(parts[1].trim(), Integer.parseInt(parts[2].trim())));

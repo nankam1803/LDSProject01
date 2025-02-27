@@ -1,6 +1,5 @@
 public class SortAlgorithms {
 
-    //Selection Sort
     public static void selectionSort(String[] arr) {
         int n = arr.length;
         for (int i = 0; i < n - 1; i++) {
@@ -16,7 +15,6 @@ public class SortAlgorithms {
         }
     }
 
-    //Merge Sort
     public static void mergeSort(String[] arr, int left, int right) {
         if (left < right) {
             int mid = (left + right) / 2;
@@ -46,7 +44,6 @@ public class SortAlgorithms {
         while (j < n2) arr[k++] = R[j++];
     }
 
-    //QuickSort
     public static void quickSort(String[] arr, int low, int high) {
         if (low < high) {
             int pi = partition(arr, low, high);
@@ -73,7 +70,6 @@ public class SortAlgorithms {
     }
     
 
-    //Radix Sort for Numerical Scores
     public static void radixSort(int[] arr) {
         int max = getMax(arr);
         for (int exp = 1; max / exp > 0; exp *= 10) {
