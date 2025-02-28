@@ -144,7 +144,28 @@ public class SortAlgorithms {
         return i + 1;
     }
 
-    // Radix Sort for integer array
+    public static void radixSort(double[] arr) {
+        int n = arr.length;
+        int[] intArr = new int[n];
+
+        // Scale factor to convert decimals to integers (for better precision)
+        int scaleFactor = 100; 
+
+        // Convert double scores to scaled integers
+        for (int i = 0; i < n; i++) {
+            intArr[i] = (int) Math.round(arr[i] * scaleFactor);
+        }
+
+        // Perform Radix Sort on integer values
+        radixSort(intArr);
+
+        // Convert back to double
+        for (int i = 0; i < n; i++) {
+            arr[i] = intArr[i] / (double) scaleFactor;
+        }
+    }
+
+    // ✅ Radix Sort for Integers (Used after conversion)
     public static void radixSort(int[] arr) {
         int max = getMax(arr);
         for (int exp = 1; max / exp > 0; exp *= 10) {
@@ -157,21 +178,33 @@ public class SortAlgorithms {
         int[] output = new int[n];
         int[] count = new int[10];
 
-        for (int i = 0; i < n; i++) count[(arr[i] / exp) % 10]++;
+        // Count occurrences
+        for (int i = 0; i < n; i++) {
+            count[(arr[i] / exp) % 10]++;
+        }
 
-        for (int i = 1; i < 10; i++) count[i] += count[i - 1];
+        // Cumulative count
+        for (int i = 1; i < 10; i++) {
+            count[i] += count[i - 1];
+        }
 
+        // Place elements in correct order
         for (int i = n - 1; i >= 0; i--) {
             output[count[(arr[i] / exp) % 10] - 1] = arr[i];
             count[(arr[i] / exp) % 10]--;
         }
 
+        // Copy back to original array
         System.arraycopy(output, 0, arr, 0, n);
     }
 
     private static int getMax(int[] arr) {
         int max = arr[0];
-        for (int num : arr) max = Math.max(max, num);
+        for (int num : arr) {
+            if (num > max) {
+                max = num;
+            }
+        }
         return max;
     }
 }

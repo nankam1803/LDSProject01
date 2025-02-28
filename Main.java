@@ -113,50 +113,52 @@ public class Main {
         }
     }
 
-    // ✅ Sort students by score and update the students list
-    private static void sortByScore(Scanner scanner) {
-        System.out.println("Choose a sorting algorithm:");
-        System.out.println("1. Selection Sort");
-        System.out.println("2. Merge Sort");
-        System.out.println("3. Quick Sort");
-        System.out.print("Enter your choice: ");
+// ✅ Sort students by score using Radix Sort option
+private static void sortByScore(Scanner scanner) {
+    System.out.println("Choose a sorting algorithm:");
+    System.out.println("1. Selection Sort");
+    System.out.println("2. Merge Sort");
+    System.out.println("3. Quick Sort");
+    System.out.println("4. Radix Sort (Scores converted to integers)");
+    System.out.print("Enter your choice: ");
 
-        int choice = scanner.nextInt();
-        scanner.nextLine(); // Consume newline
+    int choice = scanner.nextInt();
+    scanner.nextLine(); // Consume newline
 
-        // Extract Scores for Sorting
-        double[] scores = new double[students.size()];
-        for (int i = 0; i < students.size(); i++) {
-            scores[i] = students.get(i).score;
-        }
-
-        // Sort using the chosen algorithm
-        switch (choice) {
-            case 1:
-                SortAlgorithms.selectionSort(scores);
-                break;
-            case 2:
-                SortAlgorithms.mergeSort(scores, 0, scores.length - 1);
-                break;
-            case 3:
-                SortAlgorithms.quickSort(scores, 0, scores.length - 1);
-                break;
-            default:
-                System.out.println("Invalid choice! Defaulting to Selection Sort.");
-                SortAlgorithms.selectionSort(scores);
-        }
-
-        // Update students list order
-        students.sort(Comparator.comparingDouble(s -> s.score));
-
-        System.out.println("Sorted Scores:");
-        for (Student s : students) {
-            System.out.println(s.name + " - " + s.score);
-        }
+    // Extract Scores for Sorting
+    double[] scores = new double[students.size()];
+    for (int i = 0; i < students.size(); i++) {
+        scores[i] = students.get(i).score;
     }
 
-// ✅ Search for a student by name (Ensures sorted dataset before Binary Search)
-// ✅ Search for a student by name (Ensures sorted dataset before Binary Search)
+    switch (choice) {
+        case 1:
+            SortAlgorithms.selectionSort(scores);
+            break;
+        case 2:
+            SortAlgorithms.mergeSort(scores, 0, scores.length - 1);
+            break;
+        case 3:
+            SortAlgorithms.quickSort(scores, 0, scores.length - 1);
+            break;
+        case 4:
+            System.out.println("\nUsing Radix Sort: Scores will be converted to nearest integers.");
+            SortAlgorithms.radixSort(scores);
+            break;
+        default:
+            System.out.println("Invalid choice! Defaulting to Selection Sort.");
+            SortAlgorithms.selectionSort(scores);
+    }
+
+    // Update students list order based on the sorted scores
+    students.sort(Comparator.comparingDouble(s -> s.score));
+
+    System.out.println("\nSorted Scores:");
+    for (Student s : students) {
+        System.out.println(s.name + " - " + s.score);
+    }
+}
+
 private static void searchStudent(Scanner scanner) {
     System.out.println("Choose a searching algorithm:");
     System.out.println("1. Linear Search");
@@ -216,22 +218,53 @@ private static boolean isSorted(String[] arr) {
     return true; // Dataset is sorted
 }
 
-
-    // ✅ Benchmark sorting performance
 private static void benchmarkSortingPerformance() {
-        System.out.println("\nSorting Performance Benchmark (Time in ms):");
-        System.out.println("---------------------------------------------------");
-        System.out.printf("%-20s %-15s%n", "Algorithm", "Time (ms)");
-        System.out.println("---------------------------------------------------");
+    System.out.println("\nSorting Performance Benchmark (Time in ms):");
+    System.out.println("---------------------------------------------------");
+    System.out.printf("%-20s %-15s%n", "Algorithm", "Time (ms)");
+    System.out.println("---------------------------------------------------");
 
-        for (String algorithm : new String[]{"Selection Sort", "Merge Sort", "Quick Sort"}) {
-            List<Student> tempList = new ArrayList<>(students);
+    String[] algorithms = {"Selection Sort", "Merge Sort", "Quick Sort", "Radix Sort"};
 
-            long startTime = System.nanoTime();
-            tempList.sort(Comparator.comparing(s -> s.name));
-            long endTime = System.nanoTime();
+    for (String algorithm : algorithms) {
+        List<Student> tempList = new ArrayList<>(students); // Create a fresh copy for each sort
+        long startTime = System.nanoTime();
 
-            System.out.printf("%-20s %-15d%n", algorithm, (endTime - startTime) / 1_000_000);
+        switch (algorithm) {
+            case "Selection Sort":
+                tempList.sort(Comparator.comparing(s -> s.name)); // Sorting names
+                break;
+
+            case "Merge Sort":
+                String[] namesMerge = new String[tempList.size()];
+                for (int i = 0; i < tempList.size(); i++) {
+                    namesMerge[i] = tempList.get(i).name;
+                }
+                SortAlgorithms.mergeSort(namesMerge, 0, namesMerge.length - 1);
+                break;
+
+            case "Quick Sort":
+                String[] namesQuick = new String[tempList.size()];
+                for (int i = 0; i < tempList.size(); i++) {
+                    namesQuick[i] = tempList.get(i).name;
+                }
+                SortAlgorithms.quickSort(namesQuick, 0, namesQuick.length - 1);
+                break;
+
+            case "Radix Sort":
+                double[] scores = new double[tempList.size()];
+                for (int i = 0; i < tempList.size(); i++) {
+                    scores[i] = tempList.get(i).score;
+                }
+                SortAlgorithms.radixSort(scores); // Sorting scores using Radix Sort
+                break;
         }
+
+        long endTime = System.nanoTime();
+        long duration = (endTime - startTime) / 1_000_000; // Convert nanoseconds to milliseconds
+
+        System.out.printf("%-20s %-15d%n", algorithm, duration);
+    }
 }
+
 }
