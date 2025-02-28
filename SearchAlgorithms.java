@@ -10,13 +10,27 @@ public class SearchAlgorithms {
     }
 
     public static int binarySearch(String[] arr, String key, int low, int high) {
-        if (low > high) return -1;
+        if (low > high) 
+        {
+            return -1;
+        }
         
         int mid = low + (high - low) / 2;
         int compare = arr[mid].compareTo(key);
 
-        if (compare == 0) return mid;
-        else if (compare > 0) return binarySearch(arr, key, low, mid - 1);
-        else return binarySearch(arr, key, mid + 1, high);
+        if (compare == 0) 
+        {
+            return mid;
+        }
+
+        else if (compare > 0) 
+        {
+            return binarySearch(arr, key, low, mid - 1);
+        }
+
+        else 
+        {
+            return binarySearch(arr, key, mid + 1, high);
+        }
     }
 }
