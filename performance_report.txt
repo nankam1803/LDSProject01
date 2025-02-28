@@ -1,0 +1,10 @@
+**The performance report for a dataset of 100 elements**
+
+Sorting Performance Benchmark (Time in ms):
+---------------------------------------------------
+Algorithm            Time (ms)
+---------------------------------------------------
+Selection Sort       4
+Merge Sort           2
+Quick Sort           0
+Radix Sort           0
