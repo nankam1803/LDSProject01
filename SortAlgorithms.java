@@ -165,7 +165,7 @@ public class SortAlgorithms {
         }
     }
 
-    // ✅ Radix Sort for Integers (Used after conversion)
+    // Radix Sort for Integers (Used after conversion)
     public static void radixSort(int[] arr) {
         int max = getMax(arr);
         for (int exp = 1; max / exp > 0; exp *= 10) {

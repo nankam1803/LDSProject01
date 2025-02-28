@@ -71,7 +71,7 @@ public class Main {
         br.close();
     }
 
-    // ✅ Sort students by name and update the students list
+    // Sort students by name and update the students list
     private static void sortByName(Scanner scanner) {
         System.out.println("Choose a sorting algorithm:");
         System.out.println("1. Selection Sort");
@@ -113,7 +113,7 @@ public class Main {
         }
     }
 
-// ✅ Sort students by score using Radix Sort option
+// Sort students by score using Radix Sort option
 private static void sortByScore(Scanner scanner) {
     System.out.println("Choose a sorting algorithm:");
     System.out.println("1. Selection Sort");
@@ -208,7 +208,6 @@ private static void searchStudent(Scanner scanner) {
     }
 }
 
-// ✅ Fix for checking sorted dataset before Binary Search
 private static boolean isSorted(String[] arr) {
     for (int i = 0; i < arr.length - 1; i++) {
         if (arr[i].compareToIgnoreCase(arr[i + 1]) > 0) {
