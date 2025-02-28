@@ -23,8 +23,15 @@ public class Main {
             System.out.println("5. Exit");
             System.out.print("Enter your choice: ");
 
-            int choice = scanner.nextInt();
-            scanner.nextLine(); // Consume newline
+            int choice;
+            try {
+                choice = scanner.nextInt();
+                scanner.nextLine(); // Consume newline
+            } catch (InputMismatchException e) {
+                System.out.println("Invalid input! Please enter a valid number.");
+                scanner.nextLine(); // Clear invalid input
+                continue;
+            }
 
             switch (choice) {
                 case 1:
@@ -48,7 +55,7 @@ public class Main {
         }
     }
 
-    // Load CSV file into the students list (Now handles decimal scores)
+    // Load CSV file into the students list
     private static void loadCSV(String filename) throws IOException {
         BufferedReader br = new BufferedReader(new FileReader(filename));
         String line;
@@ -58,13 +65,13 @@ public class Main {
             String[] parts = line.split(",");
             if (parts.length < 3) continue; // Skip invalid lines
             String name = parts[1].trim();
-            double score = Double.parseDouble(parts[2].trim()); // Fix: Now parsing doubles
+            double score = Double.parseDouble(parts[2].trim());
             students.add(new Student(name, score));
         }
         br.close();
     }
 
-    // Sort students by name using the chosen sorting algorithm
+    // ✅ Sort students by name and update the students list
     private static void sortByName(Scanner scanner) {
         System.out.println("Choose a sorting algorithm:");
         System.out.println("1. Selection Sort");
@@ -75,11 +82,13 @@ public class Main {
         int choice = scanner.nextInt();
         scanner.nextLine(); // Consume newline
 
+        // Extract Names for Sorting
         String[] names = new String[students.size()];
         for (int i = 0; i < students.size(); i++) {
             names[i] = students.get(i).name;
         }
 
+        // Sort using the chosen algorithm
         switch (choice) {
             case 1:
                 SortAlgorithms.selectionSort(names);
@@ -95,13 +104,16 @@ public class Main {
                 SortAlgorithms.selectionSort(names);
         }
 
+        // Update students list order
+        students.sort(Comparator.comparing(s -> s.name));
+
         System.out.println("Sorted by Name:");
-        for (String name : names) {
-            System.out.println(name);
+        for (Student s : students) {
+            System.out.println(s.name);
         }
     }
 
-    // Sort students by score using the chosen sorting algorithm
+    // ✅ Sort students by score and update the students list
     private static void sortByScore(Scanner scanner) {
         System.out.println("Choose a sorting algorithm:");
         System.out.println("1. Selection Sort");
@@ -112,11 +124,13 @@ public class Main {
         int choice = scanner.nextInt();
         scanner.nextLine(); // Consume newline
 
+        // Extract Scores for Sorting
         double[] scores = new double[students.size()];
         for (int i = 0; i < students.size(); i++) {
-            scores[i] = students.get(i).score; // Fix: Using double[] now
+            scores[i] = students.get(i).score;
         }
 
+        // Sort using the chosen algorithm
         switch (choice) {
             case 1:
                 SortAlgorithms.selectionSort(scores);
@@ -132,120 +146,92 @@ public class Main {
                 SortAlgorithms.selectionSort(scores);
         }
 
+        // Update students list order
+        students.sort(Comparator.comparingDouble(s -> s.score));
+
         System.out.println("Sorted Scores:");
-        for (double score : scores) {
-            System.out.println(score);
+        for (Student s : students) {
+            System.out.println(s.name + " - " + s.score);
         }
     }
 
-    // Search for a student using the chosen searching algorithm
-    private static void searchStudent(Scanner scanner) {
-        System.out.println("Choose a searching algorithm:");
-        System.out.println("1. Linear Search");
-        System.out.println("2. Binary Search (only works on sorted data)");
-        System.out.print("Enter your choice: ");
-    
-        int choice = scanner.nextInt();
-        scanner.nextLine(); // Consume newline
-    
-        System.out.print("Enter the name of the student to search: ");
-        String name = scanner.nextLine();
-    
-        // Convert student names into an array
-        String[] names = new String[students.size()];
-        for (int i = 0; i < students.size(); i++) {
-            names[i] = students.get(i).name;
-        }
-    
-        int index = -1;
-        switch (choice) {
-            case 1:
-                index = SearchAlgorithms.linearSearch(names, name);
-                break;
-    
-            case 2:
-                if (!isSorted(names)) {
-                    System.out.println("\nThe dataset is not sorted. Sorting now...");
-    
-                    students.sort(Comparator.comparing(s -> s.name));
-    
-                    System.out.println("Dataset sorted using Quick Sort.");
-                }
-    
-                for (int i = 0; i < students.size(); i++) {
-                    names[i] = students.get(i).name;
-                }
-    
-                index = SearchAlgorithms.binarySearch(names, name, 0, names.length - 1);
-                break;
-    
-            default:
-                System.out.println("Invalid choice! Defaulting to Linear Search.");
-                index = SearchAlgorithms.linearSearch(names, name);
-        }
-    
-        if (index == -1) {
-            System.out.println("Student not found!");
-        } else {
-            System.out.println("Found: " + students.get(index) +". Their Index is: " + index);
-        }
-    }
-    
-    private static boolean isSorted(String[] arr) {
-        for (int i = 0; i < arr.length - 1; i++) {
-            if (arr[i].compareToIgnoreCase(arr[i + 1]) > 0) {
-                return false;
-            }
-        }
-        return true;
+// ✅ Search for a student by name (Ensures sorted dataset before Binary Search)
+// ✅ Search for a student by name (Ensures sorted dataset before Binary Search)
+private static void searchStudent(Scanner scanner) {
+    System.out.println("Choose a searching algorithm:");
+    System.out.println("1. Linear Search");
+    System.out.println("2. Binary Search (only works on sorted data)");
+    System.out.print("Enter your choice: ");
+
+    int choice = scanner.nextInt();
+    scanner.nextLine(); // Consume newline
+
+    System.out.print("Enter the name of the student to search: ");
+    String name = scanner.nextLine();
+
+    // Convert student names into an array
+    String[] names = new String[students.size()];
+    for (int i = 0; i < students.size(); i++) {
+        names[i] = students.get(i).name;
     }
 
-    private static void benchmarkSortingPerformance() {
-        String[] algorithms = {"Selection Sort", "Merge Sort", "Quick Sort"};
+    if (choice == 2) {
+        // Check if the dataset is sorted before performing binary search
+        if (!isSorted(names)) {
+            System.out.println("\nThe dataset is not sorted. Please sort the data before trying binary search.");
+            System.out.println("Returning to main menu...\n");
+            return; // Exit the method to prevent incorrect binary search
+        }
+    }
 
+    int index = -1;
+    switch (choice) {
+        case 1:
+            index = SearchAlgorithms.linearSearch(names, name);
+            break;
+
+        case 2:
+            index = SearchAlgorithms.binarySearch(names, name, 0, names.length - 1);
+            break;
+
+        default:
+            System.out.println("Invalid choice! Defaulting to Linear Search.");
+            index = SearchAlgorithms.linearSearch(names, name);
+    }
+
+    if (index == -1) {
+        System.out.println("Student not found!");
+    } else {
+        System.out.println("Found: " + students.get(index) + ". Their Index is: " + index);
+    }
+}
+
+// ✅ Fix for checking sorted dataset before Binary Search
+private static boolean isSorted(String[] arr) {
+    for (int i = 0; i < arr.length - 1; i++) {
+        if (arr[i].compareToIgnoreCase(arr[i + 1]) > 0) {
+            return false; // Dataset is not sorted
+        }
+    }
+    return true; // Dataset is sorted
+}
+
+
+    // ✅ Benchmark sorting performance
+private static void benchmarkSortingPerformance() {
         System.out.println("\nSorting Performance Benchmark (Time in ms):");
         System.out.println("---------------------------------------------------");
         System.out.printf("%-20s %-15s%n", "Algorithm", "Time (ms)");
         System.out.println("---------------------------------------------------");
 
-        try {
-            loadCSV("student.csv");
-        } catch (IOException e) {
-            System.out.println("Error loading CSV file: " + e.getMessage());
-            return;
-        }
-        
-        List<Student> dataset = new ArrayList<>(students);
-        
-        for (String algorithm : algorithms) {
-            List<Student> tempList = new ArrayList<>(dataset);
-            String[] names = new String[tempList.size()];
-            double[] scores = new double[tempList.size()];
-            
-            for (int i = 0; i < tempList.size(); i++) {
-                names[i] = tempList.get(i).name;
-                scores[i] = tempList.get(i).score;
-            }
-            
+        for (String algorithm : new String[]{"Selection Sort", "Merge Sort", "Quick Sort"}) {
+            List<Student> tempList = new ArrayList<>(students);
+
             long startTime = System.nanoTime();
-            
-            switch (algorithm) {
-                case "Selection Sort":
-                    SortAlgorithms.selectionSort(names);
-                    break;
-                case "Merge Sort":
-                    SortAlgorithms.mergeSort(names, 0, names.length - 1);
-                    break;
-                case "Quick Sort":
-                    SortAlgorithms.quickSort(names, 0, names.length - 1);
-                    break;
-            }
-            
+            tempList.sort(Comparator.comparing(s -> s.name));
             long endTime = System.nanoTime();
-            long duration = (endTime - startTime) / 1000000; 
-            
-            System.out.printf("%-20s %-15d%n", algorithm, duration);
+
+            System.out.printf("%-20s %-15d%n", algorithm, (endTime - startTime) / 1_000_000);
         }
-    }
-    
+}
 }
